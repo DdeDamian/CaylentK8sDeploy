@@ -5,6 +5,7 @@ ARG GIT_USER
 ARG GIT_PASS
 ARG ENVIRONMENT
 ARG HELM_USER_KEY
+ARG HELM_USER_KEY_PATH
 
 RUN apt update && apt install -y curl gnupg git wget apt-transport-https apt-utils sudo
 
@@ -15,9 +16,7 @@ RUN apt-get update && apt-get install -y kubectl
 RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(cat /etc/os-release | grep VERSION_CODENAME | cut -d = -f2) main" >> /etc/apt/sources.list.d/google-cloud-sdk.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt update && apt install -y google-cloud-sdk
-RUN echo $HELM_USER_KEY >> /tmp/helm_user.key
-RUN tr ^ '\n' < /tmp/helm_user.key >> /helm_user.key
-RUN cat /helm_user.key
+ADD $HELM_USER_KEY_PATH /helm_user.key
 RUN gcloud auth activate-service-account --key-file /helm_user.key
 RUN gcloud config set project $PROJECT
 ADD startup.sh /startup.sh
