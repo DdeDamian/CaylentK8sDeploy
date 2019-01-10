@@ -15,8 +15,9 @@ RUN apt-get update && apt-get install -y kubectl
 RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(cat /etc/os-release | grep VERSION_CODENAME | cut -d = -f2) main" >> /etc/apt/sources.list.d/google-cloud-sdk.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt update && apt install -y google-cloud-sdk
-ADD $HELM_USER_KEY_PATH /helm_user.key
-RUN gcloud auth activate-service-account --key-file /helm_user.key
+ADD $HELM_USER_KEY_PATH /helm_user.json
+RUN export GOOGLE_APPLICATION_CREDENTIALS="/helm_user.json"
+RUN gcloud auth activate-service-account --key-file /helm_user.json
 RUN gcloud config set project $PROJECT
 ADD startup.sh /startup.sh
 RUN sh /startup.sh
@@ -33,7 +34,5 @@ RUN mv helmfile_linux_amd64 /usr/local/bin/helmfile
 RUN chmod 755 /usr/local/bin/helmfile
 
 RUN git clone https://$GIT_USER:$GIT_PASS@github.com/DdeDamian/CaylentTask.git
-
-ADD secrets.yaml.dec /CaylentTask/env_vars/dev/secrets.yaml.dec
-
+RUN helm secrets dec CaylentTask/env_vars/$ENVIRONMENT/test_file
 RUN helmfile -e $ENVIRONMENT -f CaylentTask/ apply
