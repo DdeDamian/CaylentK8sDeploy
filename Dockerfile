@@ -34,5 +34,5 @@ RUN mv helmfile_linux_amd64 /usr/local/bin/helmfile
 RUN chmod 755 /usr/local/bin/helmfile
 
 RUN git clone https://$GIT_USER:$GIT_PASS@github.com/DdeDamian/CaylentTask.git
-RUN helm secrets dec CaylentTask/env_vars/$ENVIRONMENT/test_file
+RUN helm secrets dec CaylentTask/env_vars/$ENVIRONMENT/secrets.yaml
 RUN helmfile -e $ENVIRONMENT -f CaylentTask/ apply
