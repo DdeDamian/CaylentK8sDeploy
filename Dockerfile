@@ -5,6 +5,7 @@ ARG GIT_USER
 ARG GIT_PASS
 ARG ENVIRONMENT
 ARG HELM_USER_KEY_PATH
+ENV GOOGLE_APPLICATION_CREDENTIALS=$HELM_USER_KEY_PATH
 
 RUN apt update && apt install -y curl gnupg git wget apt-transport-https apt-utils sudo
 
@@ -16,7 +17,6 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(cat /etc/os-relea
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt update && apt install -y google-cloud-sdk
 ADD $HELM_USER_KEY_PATH /helm_user.json
-RUN export GOOGLE_APPLICATION_CREDENTIALS="/helm_user.json"
 RUN gcloud auth activate-service-account --key-file /helm_user.json
 RUN gcloud config set project $PROJECT
 ADD startup.sh /startup.sh
