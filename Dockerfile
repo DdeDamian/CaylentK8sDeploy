@@ -17,6 +17,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(cat /etc/os-relea
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt update && apt install -y google-cloud-sdk
 ADD $HELM_USER_KEY_PATH /helm_user.key
+RUN cat /helm_user.key
 RUN gcloud auth activate-service-account --key-file /helm_user.key
 RUN gcloud config set project $PROJECT
 ADD startup.sh /startup.sh
