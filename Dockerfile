@@ -4,6 +4,7 @@ ARG PROJECT
 ARG GIT_USER
 ARG GIT_PASS
 ARG ENVIRONMENT
+ARG HELM_USER_KEY
 
 RUN apt update && apt install -y curl gnupg git wget apt-transport-https apt-utils sudo
 
