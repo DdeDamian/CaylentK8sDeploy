@@ -5,7 +5,7 @@ ARG GIT_USER
 ARG GIT_PASS
 ARG ENVIRONMENT
 ARG HELM_USER_KEY_PATH
-ENV GOOGLE_APPLICATION_CREDENTIALS=$HELM_USER_KEY_PATH
+ENV GOOGLE_APPLICATION_CREDENTIALS="/helm_user.json"
 
 RUN apt update && apt install -y curl gnupg git wget apt-transport-https apt-utils sudo
 
@@ -34,5 +34,6 @@ RUN mv helmfile_linux_amd64 /usr/local/bin/helmfile
 RUN chmod 755 /usr/local/bin/helmfile
 
 RUN git clone https://$GIT_USER:$GIT_PASS@github.com/DdeDamian/CaylentTask.git
+RUN cat $GOOGLE_APPLICATION_CREDENTIALS
 RUN helm secrets dec CaylentTask/env_vars/$ENVIRONMENT/secrets.yaml
 RUN helmfile -e $ENVIRONMENT -f CaylentTask/ apply
